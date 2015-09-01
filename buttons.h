@@ -23,9 +23,9 @@
 #include <libopencm3/stm32/gpio.h>
 
 struct buttonState {
-	volatile bool YesUp;
+	volatile int YesUp;
 	volatile int YesDown;
-	volatile bool NoUp;
+	volatile int NoUp;
 	volatile int NoDown;
 };
 

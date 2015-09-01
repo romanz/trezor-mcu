@@ -1,0 +1,11 @@
+#!/bin/bash
+set -eux
+
+export TOOLCHAIN_DIR="$(pwd)/fake"
+export PREFIX=""
+
+make clean
+make -j8
+make -C firmware clean
+make -C firmware -j8
+

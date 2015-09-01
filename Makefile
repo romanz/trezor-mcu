@@ -1,11 +1,14 @@
+OBJS += fake_setup.o
+OBJS += fake_flash.o
+OBJS += fake_memory.o
+OBJS += fake/fake_gpio.o
+OBJS += fake/fake_spi.o
 OBJS += buttons.o
 OBJS += layout.o
 OBJS += oled.o
 OBJS += rng.o
 OBJS += serialno.o
-OBJS += setup.o
 OBJS += util.o
-OBJS += memory.o
 OBJS += gen/bitmaps.o
 OBJS += gen/fonts.o
 

@@ -26,6 +26,7 @@
 #include "messages.h"
 #include "rng.h"
 #include "bip39.h"
+#include "util.h"
 
 static uint32_t word_count;
 static bool awaiting_word = false;

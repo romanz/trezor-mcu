@@ -21,6 +21,7 @@
 #define __UTIL_H_
 
 #include <stdint.h>
+#include <string.h>
 
 inline void delay(uint32_t wait);
 
@@ -37,5 +38,9 @@ uint32_t readprotobufint(uint8_t **ptr);
 void __attribute__((noreturn)) system_halt(void);
 // reset system
 void __attribute__((noreturn)) system_reset(void);
+
+#define strlcpy(dst, src, size) strcpy((dst), (src))
+#define strlcat(dst, src, size) strcat((dst), (src))
+
 
 #endif
