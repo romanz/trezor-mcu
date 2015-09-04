@@ -4,7 +4,7 @@
 extern void *FLASH_STORAGE_START;
 
 enum {
-	FLASH_SR = 1,
+	FLASH_SR = 0, // no errors
 	FLASH_SR_PGAERR,
 	FLASH_SR_PGPERR,
 	FLASH_SR_PGSERR,

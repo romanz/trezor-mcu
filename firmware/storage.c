@@ -88,9 +88,11 @@ void storage_from_flash(uint32_t version)
 
 void storage_init(void)
 {
+	_dprintf("storage", "reset");
 	storage_reset();
 	// if magic is ok
 	if (memcmp((void *)FLASH_STORAGE_START, "stor", 4) == 0) {
+		_dprintf("storage", "OK");
 		// load uuid
 		memcpy(storage_uuid, (void *)(FLASH_STORAGE_START + 4), sizeof(storage_uuid));
 		data2hex(storage_uuid, sizeof(storage_uuid), storage_uuid_str);
@@ -103,6 +105,7 @@ void storage_init(void)
 			storage_commit();
 		}
 	} else {
+		_dprintf("storage", "new");
 		storage_reset_uuid();
 		storage_commit();
 	}
@@ -139,22 +142,27 @@ void storage_commit(void)
 	int i;
 	uint32_t *w;
 	// backup meta
+	_dprintf("storage_commit", "backup");
 	memcpy(meta_backup, (void *)FLASH_META_START, FLASH_META_LEN);
 	flash_clear_status_flags();
 	flash_unlock();
 	// erase storage
+	_dprintf("storage_commit", "erase");
 	for (i = FLASH_META_SECTOR_FIRST; i <= FLASH_META_SECTOR_LAST; i++) {
 		flash_erase_sector(i, FLASH_CR_PROGRAM_X32);
 	}
 	// modify storage
+	_dprintf("storage_commit", "modify");
 	memcpy(meta_backup + FLASH_META_DESC_LEN, "stor", 4);
 	memcpy(meta_backup + FLASH_META_DESC_LEN + 4, storage_uuid, sizeof(storage_uuid));
 	memcpy(meta_backup + FLASH_META_DESC_LEN + 4 + sizeof(storage_uuid), &storage, sizeof(Storage));
 	// copy it back
+	_dprintf("storage_commit", "copy");
 	for (i = 0; i < FLASH_META_LEN / 4; i++) {
 		w = (uint32_t *)(meta_backup + i * 4);
 		flash_program_word(FLASH_META_START + i * 4, *w);
 	}
+	_dprintf("storage_commit", "lock");
 	flash_lock();
 	// flash operation failed
 	if (FLASH_SR & (FLASH_SR_PGAERR | FLASH_SR_PGPERR | FLASH_SR_PGSERR | FLASH_SR_WRPERR)) {

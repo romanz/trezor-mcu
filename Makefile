@@ -6,11 +6,11 @@ OBJS += fake/fake_spi.o
 OBJS += buttons.o
 OBJS += layout.o
 OBJS += oled.o
-OBJS += rng.o
 OBJS += serialno.o
 OBJS += util.o
 OBJS += gen/bitmaps.o
 OBJS += gen/fonts.o
+OBJS += dprint.o
 
 libtrezor.a: $(OBJS)
 	ar rcs libtrezor.a $(OBJS)

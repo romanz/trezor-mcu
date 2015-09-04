@@ -42,5 +42,6 @@ void __attribute__((noreturn)) system_reset(void);
 #define strlcpy(dst, src, size) strcpy((dst), (src))
 #define strlcat(dst, src, size) strcat((dst), (src))
 
+void _dprintf(const char *tag, const char *msg);
 
 #endif

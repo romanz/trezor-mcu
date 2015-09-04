@@ -62,7 +62,9 @@
 
  */
 
-#define FLASH_ORIGIN		(0x08000000)
+extern uint32_t FAKE_FLASH_DATA[1 << 20];
+
+#define FLASH_ORIGIN		((uint64_t)(&FAKE_FLASH_DATA))
 
 #define FLASH_TOTAL_SIZE	(512 * 1024)
 

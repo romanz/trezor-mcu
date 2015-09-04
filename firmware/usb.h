@@ -26,4 +26,6 @@ void usbReconnect(void);
 void usbTiny(char set);
 void usbDelay(int cycles);
 
+int usbDone(void);
+
 #endif

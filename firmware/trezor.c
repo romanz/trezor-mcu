@@ -38,7 +38,9 @@ void __attribute__((noreturn)) __stack_chk_fail(void)
 
 int main(void)
 {
+	_dprintf("trezor", "main");
 	__stack_chk_guard = random32();
+	_dprintf("trezor", "setup");
 #ifndef APPVER
 	setup();
 	oledInit();
@@ -46,19 +48,23 @@ int main(void)
 	setupApp();
 #endif
 #if DEBUG_LINK
+	_dprintf("trezor", "debug");
 	oledSetDebug(1);
 	storage_reset(); // wipe storage if debug link
 	storage_reset_uuid();
 	storage_commit();
 #endif
 
+	_dprintf("trezor", "draw");
 	oledDrawBitmap(40, 0, &bmp_logo64);
 	oledRefresh();
 
+	_dprintf("trezor", "storage");
 	storage_init();
+	_dprintf("trezor", "layout");
 	layoutHome();
 	usbInit();
-	for (;;) {
+	for (; !usbDone();) {
 		usbPoll();
 	}
 

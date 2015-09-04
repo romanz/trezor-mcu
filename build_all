@@ -8,4 +8,3 @@ make clean
 make -j8
 make -C firmware clean
 make -C firmware -j8
-
