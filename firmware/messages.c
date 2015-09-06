@@ -285,6 +285,7 @@ void msg_process(char type, uint16_t msg_id, const pb_field_t *fields, uint8_t *
 	memset(msg_data, 0, sizeof(msg_data));
 	pb_istream_t stream = pb_istream_from_buffer(msg_raw, msg_size);
 	bool status = pb_decode(&stream, fields, msg_data);
+	_dprintf("msg_decode", status ? "OK" : stream.errmsg);
 	if (status) {
 		MessageProcessFunc(type, 'i', msg_id, msg_data);
 	} else {
@@ -305,6 +306,7 @@ void msg_read_common(char type, uint8_t *buf, int len)
 
 	if (read_state == READSTATE_IDLE) {
 		if (buf[0] != '?' || buf[1] != '#' || buf[2] != '#') {	// invalid start - discard
+			_dprintf("msg_read", "discard");
 			return;
 		}
 		msg_id = (buf[3] << 8) + buf[4];
@@ -312,10 +314,12 @@ void msg_read_common(char type, uint8_t *buf, int len)
 
 		fields = MessageFields(type, 'i', msg_id);
 		if (!fields) { // unknown message
+			_dprintf("msg_read", "unknown");
 			fsm_sendFailure(FailureType_Failure_UnexpectedMessage, "Unknown message");
 			return;
 		}
 		if (msg_size > MSG_IN_SIZE) { // message is too big :(
+			_dprintf("msg_read", "too big");
 			fsm_sendFailure(FailureType_Failure_SyntaxError, "Message too big");
 			return;
 		}
@@ -335,6 +339,7 @@ void msg_read_common(char type, uint8_t *buf, int len)
 	}
 
 	if (msg_pos >= msg_size) {
+		_dprintf("msg_read", "process");
 		msg_process(type, msg_id, fields, msg_in, msg_size);
 		msg_pos = 0;
 		read_state = READSTATE_IDLE;

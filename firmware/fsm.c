@@ -114,6 +114,7 @@ const HDNode *fsm_getDerivedNode(uint32_t *address_n, size_t address_n_count)
 
 void fsm_msgInitialize(Initialize *msg)
 {
+	_dprintf("fsm", "init");
 	(void)msg;
 	recovery_abort();
 	signing_abort();
@@ -158,6 +159,7 @@ void fsm_msgGetFeatures(GetFeatures *msg)
 void fsm_msgPing(Ping *msg)
 {
 	RESP_INIT(Success);
+	_dprintf("fsm", msg->message);
 
 	if (msg->has_button_protection && msg->button_protection) {
 		layoutDialogSwipe(DIALOG_ICON_QUESTION, "Cancel", "Confirm", NULL, "Do you really want to", "answer to ping?", NULL, NULL, NULL, NULL);

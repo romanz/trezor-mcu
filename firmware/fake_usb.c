@@ -22,7 +22,7 @@ void usbPoll(void)
 	static uint8_t buf[64];
 
 	size_t res = fread(buf, sizeof(buf), 1, stdin);
-	if (res == 0) {
+	if (res != 1) {
 		_done = 1; // stop polling
 		return;
 	}
@@ -37,8 +37,16 @@ void usbPoll(void)
 	}
 
 	// write pending data
-	data = msg_out_data();
-	if (data) {
+	while (true) {
+		data = msg_out_data();
+		if (data == 0)
+			break;
+
+		res = fwrite(data, 64, 1, stdout);
+		if (res != 1) {
+			_done = 1;
+			return;
+		}
 	}
 
 #if DEBUG_LINK
