@@ -44,7 +44,8 @@ CFLAGS   += $(OPTFLAGS) \
             -I$(TOP_DIR) \
             -I$(TOP_DIR)/gen \
             -I$(TOP_DIR)/trezor-crypto \
-            -I$(TOP_DIR)/trezor-qrenc
+            -I$(TOP_DIR)/trezor-qrenc \
+            -I$(TOP_DIR)/ed25519-donna
 
 ifdef APPVER
 CFLAGS   += -DAPPVER=$(APPVER)

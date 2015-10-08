@@ -39,6 +39,8 @@ OBJS += ../trezor-crypto/aes_modes.o
 
 OBJS += ../trezor-qrenc/qr_encode.o
 
+OBJS += ../ed25519-donna/ed25519.o
+
 # OBJS += protob/pb_common.o
 OBJS += protob/pb_decode.o
 OBJS += protob/pb_encode.o
@@ -54,3 +56,5 @@ CFLAGS += -DQR_MAX_VERSION=0
 CFLAGS += -DDEBUG_LINK=0
 CFLAGS += -DDEBUG_LOG=0
 CFLAGS += -DSCM_REVISION='"$(shell git rev-parse HEAD | sed 's:\(..\):\\x\1:g')"'
+CFLAGS += -DED25519_CUSTOMRANDOM=1
+CFLAGS += -DED25519_CUSTOMHASH=1

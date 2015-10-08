@@ -32,7 +32,9 @@ uint32_t ser_length(uint32_t len, uint8_t *out);
 
 uint32_t ser_length_hash(SHA256_CTX *ctx, uint32_t len);
 
-int sshMessageSign(const uint8_t *message, size_t message_len, const uint8_t *privkey, uint8_t *signature);
+int sshMessageSignNistP256(const uint8_t *message, size_t message_len, const uint8_t *privkey, uint8_t *signature);
+
+int sshMessageSignEd25519(const uint8_t *message, size_t message_len, const uint8_t *privkey, const uint8_t *publickey, uint8_t *signature);
 
 int cryptoMessageSign(const uint8_t *message, size_t message_len, const uint8_t *privkey, uint8_t *signature);
 

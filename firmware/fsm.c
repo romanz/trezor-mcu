@@ -46,6 +46,7 @@
 #include "ripemd160.h"
 #include "secp256k1.h"
 #include "nist256p1.h"
+#include "ed25519.h"
 
 // message methods
 
@@ -303,6 +304,10 @@ void fsm_msgGetPublicKey(GetPublicKey *msg)
 		if (curve) {
 			// correct public key (since fsm_getDerivedNode uses secp256k1 curve)
 			ecdsa_get_public_key33(curve, node->private_key, public_key);
+		} else
+		if (strcmp(msg->ecdsa_curve_name, "ed25519") == 0) {
+			public_key[0] = 0;
+			ed25519_publickey(node->private_key, public_key + 1);
 		}
 	}
 
@@ -735,6 +740,10 @@ void fsm_msgSignIdentity(SignIdentity *msg)
 		if (curve) {
 			// correct public key (since fsm_getDerivedNode uses secp256k1 curve)
 			ecdsa_get_public_key33(curve, node->private_key, public_key);
+		} else
+		if (strcmp(msg->ecdsa_curve_name, "ed25519") == 0) {
+			public_key[0] = 0;
+			ed25519_publickey(node->private_key, public_key + 1);
 		}
 	}
 
@@ -743,7 +752,11 @@ void fsm_msgSignIdentity(SignIdentity *msg)
 	int result = 0;
 	layoutProgressSwipe("Signing", 0);
 	if (sign_ssh) { // SSH does not sign visual challenge
-		result = sshMessageSign(msg->challenge_hidden.bytes, msg->challenge_hidden.size, node->private_key, resp->signature.bytes);
+		if (strcmp(msg->ecdsa_curve_name, "ed25519") == 0) {
+			result = sshMessageSignEd25519(msg->challenge_hidden.bytes, msg->challenge_hidden.size, node->private_key, public_key + 1, resp->signature.bytes);
+		} else {
+			result = sshMessageSignNistP256(msg->challenge_hidden.bytes, msg->challenge_hidden.size, node->private_key, resp->signature.bytes);
+		}
 	} else {
 		uint8_t digest[64];
 		sha256_Raw(msg->challenge_hidden.bytes, msg->challenge_hidden.size, digest);

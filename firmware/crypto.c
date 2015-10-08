@@ -27,6 +27,7 @@
 #include "layout.h"
 #include "secp256k1.h"
 #include "nist256p1.h"
+#include "ed25519.h"
 
 uint32_t ser_length(uint32_t len, uint8_t *out)
 {
@@ -84,10 +85,17 @@ uint32_t deser_length(const uint8_t *in, uint32_t *out)
 	return 1 + 8;
 }
 
-int sshMessageSign(const uint8_t *message, size_t message_len, const uint8_t *privkey, uint8_t *signature)
+int sshMessageSignNistP256(const uint8_t *message, size_t message_len, const uint8_t *privkey, uint8_t *signature)
 {
 	signature[0] = 0; // prefix: pad with zero, so all signatures are 65 bytes
 	return ecdsa_sign(&nist256p1, privkey, message, message_len, signature + 1, NULL);
+}
+
+int sshMessageSignEd25519(const uint8_t *message, size_t message_len, const uint8_t *privkey, const uint8_t *publickey, uint8_t *signature)
+{
+	signature[0] = 0; // prefix: pad with zero, so all signatures are 65 bytes
+	ed25519_sign(message, message_len, privkey, publickey, signature + 1);
+	return 0;
 }
 
 int cryptoMessageSign(const uint8_t *message, size_t message_len, const uint8_t *privkey, uint8_t *signature)
